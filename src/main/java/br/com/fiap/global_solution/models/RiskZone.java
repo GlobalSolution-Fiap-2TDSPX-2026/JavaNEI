@@ -20,8 +20,6 @@ public class RiskZone {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private RiskAssessment riskAssessment;
 
     private String regionName;
     private Double latitude;

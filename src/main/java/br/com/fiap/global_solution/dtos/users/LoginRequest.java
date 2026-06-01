@@ -1,4 +1,4 @@
-package br.com.fiap.global_solution.dtos;
+package br.com.fiap.global_solution.dtos.users;
 
 import jakarta.validation.constraints.NotBlank;
 

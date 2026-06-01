@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record RiskAssessmentResponse(
         Long id,
         String asteroidName,
+        String riskZoneName,
         RiskLevel riskLevel,
         Double missDistanceKm,
         Double safeDistanceThresholdKm,
@@ -17,6 +18,7 @@ public record RiskAssessmentResponse(
         return new RiskAssessmentResponse(
                 rA.getId(),
                 rA.getAsteroid().getName(),
+                rA.getRiskZone().getRegionName(),
                 rA.getRiskLevel(),
                 rA.getMissDistanceKm(),
                 rA.getSafeDistanceThresholdKm(),

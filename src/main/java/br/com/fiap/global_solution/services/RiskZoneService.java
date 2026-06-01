@@ -37,22 +37,19 @@ public class RiskZoneService {
         return riskZoneRepository.findByAlertLevel(alertLevel, pageable);
     }
 
-    @Cacheable(value = "riskAssessment")
-    public Page<RiskZone> getZoneByRiskAssessment(RiskAssessment riskAssessment, Pageable pageable) {
-        return riskZoneRepository.findByRiskAssessment(riskAssessment, pageable);
-    }
+
 
     @Cacheable(value = "regionName")
     public Page<RiskZone> getZoneByRegionName(String region, Pageable pageable) {
         return riskZoneRepository.findByRegionNameContainingIgnoreCase(region, pageable);
     }
 
-    @CacheEvict(value = {"riskZone", "alertLevel", "riskAssessment", "regionName"}, allEntries = true)
+    @CacheEvict(value = {"riskZone", "alertLevel", "regionName"}, allEntries = true)
     public RiskZone addRiskZone(RiskZone riskZone) {
         return riskZoneRepository.save(riskZone);
     }
 
-    @CacheEvict(value = {"riskZone", "alertLevel", "riskAssessment", "regionName"}, allEntries = true)
+    @CacheEvict(value = {"riskZone", "alertLevel", "regionName"}, allEntries = true)
     public void deleteRiskZone(Long id) {
         var optionalRiskZone = riskZoneRepository.findById(id);
         if (optionalRiskZone.isEmpty()) {
@@ -61,7 +58,7 @@ public class RiskZoneService {
         riskZoneRepository.deleteById(id);
     }
 
-    @CacheEvict(value = {"riskZone", "alertLevel", "riskAssessment", "regionName"}, allEntries = true)
+    @CacheEvict(value = {"riskZone", "alertLevel", "regionName"}, allEntries = true)
     public RiskZone updateRiskZone(Long id, RiskZone newRiskZone) {
         var optionalRiskZone = riskZoneRepository.findById(id);
         if (optionalRiskZone.isEmpty()) {

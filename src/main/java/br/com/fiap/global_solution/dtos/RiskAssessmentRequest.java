@@ -8,6 +8,9 @@ public record RiskAssessmentRequest(
         @NotNull(message = "asteroidId is required")
         Long asteroidId,
 
+        @NotNull(message = "riskZone is required")
+        Long riskZoneId,
+
         @NotNull(message = "riskLevel is required")
         RiskLevel riskLevel,
 

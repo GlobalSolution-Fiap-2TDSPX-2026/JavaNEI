@@ -25,6 +25,10 @@ public class RiskAssessment {
     @OneToOne
     private Asteroid asteroid;
 
+    @ManyToOne
+    @JoinColumn(name = "risk_zone_id")
+    private RiskZone riskZone;
+
     private RiskLevel riskLevel;
     private Double missDistanceKm;
     private Double safeDistanceThresholdKm;

@@ -1,9 +1,12 @@
 package br.com.fiap.global_solution.services;
 
 import br.com.fiap.global_solution.dtos.nasa.NasaAsteroid;
+import br.com.fiap.global_solution.dtos.nasa.NasaCloseApproachData;
 import br.com.fiap.global_solution.dtos.nasa.NasaResponse;
 import br.com.fiap.global_solution.models.Asteroid;
+import br.com.fiap.global_solution.models.CloseApproach;
 import br.com.fiap.global_solution.repositories.AsteroidRepository;
+import br.com.fiap.global_solution.repositories.CloseApproachRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,47 +19,80 @@ public class NasaSyncService {
 
     private final RestTemplate restTemplate;
     private final AsteroidRepository asteroidRepository;
+    private final CloseApproachRepository closeApproachRepository;
     private final RiskAssessmentService riskAssessmentService;
 
     @Value("${nasa.api.key}")
     private String apiKey;
 
-    public NasaSyncService(RestTemplate restTemplate, AsteroidRepository asteroidRepository,  RiskAssessmentService riskAssessmentService) {
+    public NasaSyncService(RestTemplate restTemplate,
+                           AsteroidRepository asteroidRepository,
+                           CloseApproachRepository closeApproachRepository,
+                           RiskAssessmentService riskAssessmentService) {
         this.restTemplate = restTemplate;
         this.asteroidRepository = asteroidRepository;
+        this.closeApproachRepository = closeApproachRepository;
         this.riskAssessmentService = riskAssessmentService;
     }
 
-    public void syncAsteroidsFromToday() {
-        String hoje = LocalDate.now().toString();
-        String url = "https://api.nasa.gov/neo/rest/v1/feed?start_date=" + hoje + "&end_date=" + hoje + "&api_key=" + apiKey;
+    /**
+     * Sincroniza asteroides da NASA para um intervalo de datas.
+     * A API da NASA aceita no máximo 7 dias por requisição.
+     */
+    public int syncAsteroids(LocalDate startDate, LocalDate endDate) {
+        String url = buildUrl(startDate, endDate);
+        NasaResponse nasaResponse = restTemplate.getForObject(url, NasaResponse.class);
 
-        NasaResponse respostaNasa = restTemplate.getForObject(url, NasaResponse.class);
+        if (nasaResponse == null || nasaResponse.nearEarthObjects() == null) return 0;
 
-        if (respostaNasa != null && respostaNasa.nearEarthObjects() != null) {
-            List<NasaAsteroid> asteroidesDeHoje = respostaNasa.nearEarthObjects().get(hoje);
+        int count = 0;
+        for (var entry : nasaResponse.nearEarthObjects().entrySet()) {
+            List<NasaAsteroid> dayAsteroids = entry.getValue();
+            if (dayAsteroids == null) continue;
 
-            if (asteroidesDeHoje != null) {
-                for (NasaAsteroid nasaDto : asteroidesDeHoje) {
+            for (NasaAsteroid nasaDto : dayAsteroids) {
+                Asteroid asteroid = asteroidRepository.findByNasaId(nasaDto.id())
+                        .orElseGet(() -> {
+                            Asteroid a = new Asteroid();
+                            a.setNasaId(nasaDto.id());
+                            a.setName(nasaDto.name());
+                            a.setIsPotentiallyDangerous(nasaDto.isPotentiallyHazardousAsteroid());
+                            return asteroidRepository.save(a);
+                        });
 
-                    Asteroid asteroid = new Asteroid();
-                    asteroid.setNasaId(nasaDto.id());
-                    asteroid.setName(nasaDto.name());
-                    asteroid.setIsPotentiallyDangerous(nasaDto.isPotentiallyHazardousAsteroid());
+                if (nasaDto.closeApproachData() != null) {
+                    for (NasaCloseApproachData ca : nasaDto.closeApproachData()) {
+                        String kmString = ca.missDistance() != null ? ca.missDistance().get("kilometers") : null;
+                        if (kmString == null) continue;
 
-                    asteroidRepository.save(asteroid);
-
-                    if (nasaDto.closeApproachData() != null && !nasaDto.closeApproachData().isEmpty()) {
-
-                        String kmString = nasaDto.closeApproachData().get(0).missDistance().get("kilometers");
                         Double km = Double.parseDouble(kmString);
 
+                        CloseApproach closeApproach = CloseApproach.builder()
+                                .asteroid(asteroid)
+                                .approachDate(LocalDate.parse(ca.closeApproachDate()))
+                                .missDistanceKm(km)
+                                .orbitingBody("Earth")
+                                .build();
+                        closeApproachRepository.save(closeApproach);
+
                         riskAssessmentService.assessmentImpactRisk(asteroid, km);
-
+                        count++;
                     }
-
                 }
             }
         }
-}
+        return count;
+    }
+
+    public int syncAsteroidsFromToday() {
+        LocalDate today = LocalDate.now();
+        return syncAsteroids(today, today);
+    }
+
+    private String buildUrl(LocalDate start, LocalDate end) {
+        return "https://api.nasa.gov/neo/rest/v1/feed"
+                + "?start_date=" + start
+                + "&end_date=" + end
+                + "&api_key=" + apiKey;
+    }
 }

@@ -11,7 +11,5 @@ public interface RiskZoneRepository extends JpaRepository<RiskZone,Long> {
 
     Page<RiskZone> findByAlertLevel(AlertLevel alertLevel, Pageable pageable);
 
-    Page<RiskZone> findByRiskAssessment(RiskAssessment riskAssessment, Pageable pageable);
-
     Page<RiskZone> findByRegionNameContainingIgnoreCase(String region, Pageable pageable);
 }

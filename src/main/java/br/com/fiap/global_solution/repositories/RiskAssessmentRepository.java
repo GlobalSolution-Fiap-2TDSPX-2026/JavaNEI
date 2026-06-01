@@ -18,6 +18,8 @@ public interface RiskAssessmentRepository extends JpaRepository<RiskAssessment, 
 
     Page<RiskAssessment> findByRiskLevelIn(List<RiskLevel> levels, Pageable pageable);
 
-        Page<RiskAssessment> findByAssessedAtBetween(LocalDateTime start, LocalDateTime end, Pageable pageable);
+    Page<RiskAssessment> findByAssessedAtBetween(LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    Page<RiskAssessment> findByRiskZoneId(Long riskZoneId, Pageable pageable);
 
 }

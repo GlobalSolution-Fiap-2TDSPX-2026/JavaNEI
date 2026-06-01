@@ -41,8 +41,8 @@ public class AsteroidService {
     }
 
     @Cacheable(value = "hazardous")
-    public Page<Asteroid> findBtPotentiallyHazardous(Boolean isPotentiallyHazardous, Pageable pageable) {
-        return asteroidRepository.findByIsPotentiallyHazardous(isPotentiallyHazardous, pageable);
+    public Page<Asteroid> findByPotentiallyHazardous(Boolean isPotentiallyHazardous, Pageable pageable) {
+        return asteroidRepository.findByIsPotentiallyDangerous(isPotentiallyHazardous, pageable);
     }
 
 
