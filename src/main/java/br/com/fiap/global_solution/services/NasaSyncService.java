@@ -35,10 +35,7 @@ public class NasaSyncService {
         this.riskAssessmentService = riskAssessmentService;
     }
 
-    /**
-     * Sincroniza asteroides da NASA para um intervalo de datas.
-     * A API da NASA aceita no máximo 7 dias por requisição.
-     */
+
     public int syncAsteroids(LocalDate startDate, LocalDate endDate) {
         String url = buildUrl(startDate, endDate);
         NasaResponse nasaResponse = restTemplate.getForObject(url, NasaResponse.class);
