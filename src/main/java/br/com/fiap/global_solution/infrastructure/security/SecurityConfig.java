@@ -55,7 +55,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/risk-zones/**", "/risk-assessments/**").authenticated()
                         .requestMatchers("/risk-zones/**", "/risk-assessments/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/asteroids/**", "/close-approaches/**").authenticated()
-                        .requestMatchers("/asteroids/**", "/close-approaches/**").hasRole("ADMIN")
+                        .requestMatchers("/asteroids/**", "/close-approaches/**").permitAll()
                         .requestMatchers("/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
