@@ -35,6 +35,10 @@ public class AsteroidService {
         return asteroidRepository.findByNasaId(nasaId);
     }
 
+    public Optional<Asteroid> findByDistance(String distance) {
+        return asteroidRepository.findByDistance(distance);
+    }
+
     @Cacheable(value = "names")
     public Page<Asteroid> getAsteroidByName(String name, Pageable pageable) {
         return asteroidRepository.findByNameContainingIgnoreCase(name, pageable);

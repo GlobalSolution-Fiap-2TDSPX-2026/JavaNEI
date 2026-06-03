@@ -11,6 +11,8 @@ public interface AsteroidRepository extends JpaRepository<Asteroid, Long> {
 
     Optional<Asteroid> findByNasaId(String nasaId);
 
+    Optional<Asteroid> findByDistance(String distance);
+
     Page<Asteroid> findByIsPotentiallyDangerous(Boolean isPotentiallyHazardous, Pageable pageable);
 
     Page<Asteroid> findByNameContainingIgnoreCase(String name, Pageable pageable);
