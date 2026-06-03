@@ -6,6 +6,7 @@ import java.util.List;
 public record CloseApproachesSummaryResponse(
         int countAsteroids,
         Double minDistanceKm,
+        String minDistanceAsteroid,
         RiskLevel highestRisk,
         List<CloseApproachResponse> approaches
 ) {}

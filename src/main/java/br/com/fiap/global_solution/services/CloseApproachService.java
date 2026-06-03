@@ -82,6 +82,13 @@ public class CloseApproachService {
                 .min(Double::compareTo)
                 .orElse(0.0);
 
+        String minDistanceAsteroid = all.stream()
+                .filter(c -> c.getMissDistanceKm() != null)
+                .min(java.util.Comparator.comparing(CloseApproach::getMissDistanceKm))
+                .map(CloseApproach::getAsteroid)
+                .map(Asteroid::getName)
+                .orElse(null);
+
         RiskLevel highestRisk = all.stream()
                 .filter(c -> c.getAsteroid() != null && c.getAsteroid().getRiskAssessment() != null)
                 .map(c -> c.getAsteroid().getRiskAssessment().getRiskLevel())
@@ -93,7 +100,7 @@ public class CloseApproachService {
                 .map(CloseApproachResponse::fromEntity)
                 .toList();
 
-        return new CloseApproachesSummaryResponse(count, minDistance, highestRisk, listaDtos);
+        return new CloseApproachesSummaryResponse(count, minDistance, minDistanceAsteroid, highestRisk, listaDtos);
     }
 
 }
