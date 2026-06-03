@@ -68,15 +68,6 @@ public class AsteroidController {
                         .map(AsteroidResponse::fromEntity));
     }
 
-    @GetMapping("/{missDistanceKm}")
-    @Operation(summary = "Busca asteroides pela a distancia minima exata")
-    public ResponseEntity<AsteroidResponse> getByDistance(@PathVariable String distance) {
-        return asteroidService.findByDistance(distance)
-                .map(AsteroidResponse::fromEntity)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Asteroid not found"));
-
-    }
 
     @PostMapping
     @Operation(summary = "Cadastrar um asteroide manualmente")

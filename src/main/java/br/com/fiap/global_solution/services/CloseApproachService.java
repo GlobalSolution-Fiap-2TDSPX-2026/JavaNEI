@@ -71,6 +71,7 @@ public class CloseApproachService {
         closeApproachRepository.deleteById(id);
     }
 
+
     public CloseApproachesSummaryResponse getSummary() {
         var all = closeApproachRepository.findAll();
 
