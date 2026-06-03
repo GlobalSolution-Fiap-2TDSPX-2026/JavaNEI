@@ -8,12 +8,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface CloseApproachRepository extends JpaRepository<CloseApproach, Long> {
 
     Page<CloseApproach> findByAsteroid( Asteroid asteroid, Pageable pageable);
 
-    Page<CloseApproach> findByApproachDateBetween(LocalDate start, LocalDate end, Pageable pageable);
+    List<CloseApproach> findByApproachDateBetween(LocalDate start, LocalDate end);
 
     Page<CloseApproach> findByMissDistanceKmLessThan(Double distance, Pageable pageable);
 

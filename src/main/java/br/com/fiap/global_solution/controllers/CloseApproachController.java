@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/close-approaches")
@@ -62,12 +63,14 @@ public class CloseApproachController {
 
     @GetMapping("/date-range")
     @Operation(summary = "Filtrar aproximações por intervalo de datas (formato: yyyy-MM-dd)")
-    public ResponseEntity<Page<CloseApproachResponse>> getByDateRange(
+    public ResponseEntity<List<CloseApproachResponse>> getByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end,
-            @PageableDefault(size = 10) Pageable pageable) {
-        return ResponseEntity.ok(closeApproachService.getCloseApproachesByDate(start, end, pageable)
-                .map(CloseApproachResponse::fromEntity));
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+        List<CloseApproachResponse> response = closeApproachService.getCloseApproachesByDate(start, end)
+                .stream()
+                .map(CloseApproachResponse::fromEntity)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/distance")

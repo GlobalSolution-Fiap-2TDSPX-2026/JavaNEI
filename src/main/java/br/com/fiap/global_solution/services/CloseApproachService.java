@@ -42,8 +42,8 @@ public class CloseApproachService {
     }
 
     @Cacheable(value = "date")
-    public Page<CloseApproach> getCloseApproachesByDate(LocalDate start, LocalDate end, Pageable pageable) {
-        return closeApproachRepository.findByApproachDateBetween(start, end, pageable);
+    public List<CloseApproach> getCloseApproachesByDate(LocalDate start, LocalDate end) {
+        return closeApproachRepository.findByApproachDateBetween(start, end);
     }
 
     @Cacheable(value = "distance")
@@ -73,7 +73,7 @@ public class CloseApproachService {
 
 
     public CloseApproachesSummaryResponse getSummary() {
-        var all = closeApproachRepository.findAll();
+        var all = closeApproachRepository.findByApproachDateBetween(LocalDate.now(), LocalDate.now());
 
         int count = all.size();
 
