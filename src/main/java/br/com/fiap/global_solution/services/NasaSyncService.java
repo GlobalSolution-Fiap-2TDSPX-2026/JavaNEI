@@ -64,11 +64,20 @@ public class NasaSyncService {
 
                         Double km = Double.parseDouble(kmString);
 
+
+                        Double velocidadeKmH = null;
+                        if (ca.relativeVelocity() != null && ca.relativeVelocity().get("kilometers_per_hour") != null) {
+                            velocidadeKmH = Double.parseDouble(ca.relativeVelocity().get("kilometers_per_hour"));
+                        }
+
+
                         CloseApproach closeApproach = CloseApproach.builder()
                                 .asteroid(asteroid)
                                 .approachDate(LocalDate.parse(ca.closeApproachDate()))
                                 .missDistanceKm(km)
+                                .relativeVelocityKmH(velocidadeKmH)
                                 .orbitingBody("Earth")
+
                                 .build();
                         closeApproachRepository.save(closeApproach);
 
@@ -82,8 +91,13 @@ public class NasaSyncService {
     }
 
     public int syncAsteroidsFromToday() {
-        LocalDate today = LocalDate.now();
-        return syncAsteroids(today, today);
+        try {
+            LocalDate today = LocalDate.now();
+            return syncAsteroids(today, today);
+        } catch (Exception e) {
+            e.printStackTrace(); // veja nos logs do Spring Boot
+            throw e;
+        }
     }
 
     private String buildUrl(LocalDate start, LocalDate end) {

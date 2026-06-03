@@ -31,4 +31,6 @@ public class Asteroid {
     @OneToMany
     private List<CloseApproach> closeApproaches;
 
+    @OneToOne
+    private RiskAssessment riskAssessment;
 }

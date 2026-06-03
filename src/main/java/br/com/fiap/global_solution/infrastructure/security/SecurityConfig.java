@@ -51,7 +51,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/users").permitAll()
-                        .requestMatchers("/nasa/**").hasRole("ADMIN")
+                        .requestMatchers("/nasa/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/risk-zones/**", "/risk-assessments/**").authenticated()
                         .requestMatchers("/risk-zones/**", "/risk-assessments/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/asteroids/**", "/close-approaches/**").authenticated()

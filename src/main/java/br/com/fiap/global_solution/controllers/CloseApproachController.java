@@ -2,6 +2,7 @@ package br.com.fiap.global_solution.controllers;
 
 import br.com.fiap.global_solution.dtos.CloseApproachRequest;
 import br.com.fiap.global_solution.dtos.CloseApproachResponse;
+import br.com.fiap.global_solution.dtos.CloseApproachesSummaryResponse;
 import br.com.fiap.global_solution.models.Asteroid;
 import br.com.fiap.global_solution.services.AsteroidService;
 import br.com.fiap.global_solution.services.CloseApproachService;
@@ -34,9 +35,9 @@ public class CloseApproachController {
 
     @GetMapping
     @Operation(summary = "Listar todas as aproximações paginadas")
-    public ResponseEntity<Page<CloseApproachResponse>> getAll(
-            @PageableDefault(size = 10, sort = "approachDate") Pageable pageable) {
-        return ResponseEntity.ok(closeApproachService.getCloseApproachs(pageable).map(CloseApproachResponse::fromEntity));
+    public ResponseEntity<CloseApproachesSummaryResponse> getAll() {
+        CloseApproachesSummaryResponse response = closeApproachService.getSummary();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

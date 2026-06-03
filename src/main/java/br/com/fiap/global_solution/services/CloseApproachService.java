@@ -1,5 +1,8 @@
 package br.com.fiap.global_solution.services;
 
+import br.com.fiap.global_solution.dtos.CloseApproachResponse;
+import br.com.fiap.global_solution.dtos.CloseApproachesSummaryResponse;
+import br.com.fiap.global_solution.enums.RiskLevel;
 import br.com.fiap.global_solution.models.Asteroid;
 import br.com.fiap.global_solution.models.CloseApproach;
 import br.com.fiap.global_solution.repositories.CloseApproachRepository;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -65,6 +69,31 @@ public class CloseApproachService {
         var optionalCloseApproach = closeApproachRepository.findById(id);
         if (optionalCloseApproach.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CloseApproach not found");
         closeApproachRepository.deleteById(id);
+    }
+
+    public CloseApproachesSummaryResponse getSummary() {
+        var all = closeApproachRepository.findAll();
+
+        int count = all.size();
+
+        Double minDistance = all.stream()
+                .map(CloseApproach::getMissDistanceKm)
+                .filter(java.util.Objects::nonNull)
+                .min(Double::compareTo)
+                .orElse(0.0);
+
+        RiskLevel highestRisk = all.stream()
+                .filter(c -> c.getAsteroid() != null && c.getAsteroid().getRiskAssessment() != null)
+                .map(c -> c.getAsteroid().getRiskAssessment().getRiskLevel())
+                .filter(java.util.Objects::nonNull)
+                .max(java.util.Comparator.comparing(RiskLevel::ordinal))
+                .orElse(null);
+
+        List<CloseApproachResponse> listaDtos = all.stream()
+                .map(CloseApproachResponse::fromEntity)
+                .toList();
+
+        return new CloseApproachesSummaryResponse(count, minDistance, highestRisk, listaDtos);
     }
 
 }
