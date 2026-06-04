@@ -3,6 +3,7 @@ package br.com.fiap.global_solution.services;
 import br.com.fiap.global_solution.dtos.nasa.NasaAsteroid;
 import br.com.fiap.global_solution.dtos.nasa.NasaCloseApproachData;
 import br.com.fiap.global_solution.dtos.nasa.NasaResponse;
+import br.com.fiap.global_solution.enums.RiskLevel;
 import br.com.fiap.global_solution.models.Asteroid;
 import br.com.fiap.global_solution.models.CloseApproach;
 import br.com.fiap.global_solution.repositories.AsteroidRepository;
@@ -20,19 +21,16 @@ public class NasaSyncService {
     private final RestTemplate restTemplate;
     private final AsteroidRepository asteroidRepository;
     private final CloseApproachRepository closeApproachRepository;
-    private final RiskAssessmentService riskAssessmentService;
 
     @Value("${nasa.api.key}")
     private String apiKey;
 
     public NasaSyncService(RestTemplate restTemplate,
                            AsteroidRepository asteroidRepository,
-                           CloseApproachRepository closeApproachRepository,
-                           RiskAssessmentService riskAssessmentService) {
+                           CloseApproachRepository closeApproachRepository) {
         this.restTemplate = restTemplate;
         this.asteroidRepository = asteroidRepository;
         this.closeApproachRepository = closeApproachRepository;
-        this.riskAssessmentService = riskAssessmentService;
     }
 
 
@@ -70,6 +68,7 @@ public class NasaSyncService {
                             velocidadeKmH = Double.parseDouble(ca.relativeVelocity().get("kilometers_per_hour"));
                         }
 
+                        RiskLevel riskLevel = calculateRiskLevel(asteroid, km);
 
                         CloseApproach closeApproach = CloseApproach.builder()
                                 .asteroid(asteroid)
@@ -77,11 +76,9 @@ public class NasaSyncService {
                                 .missDistanceKm(km)
                                 .relativeVelocityKmH(velocidadeKmH)
                                 .orbitingBody("Earth")
-
+                                .riskLevel(riskLevel)
                                 .build();
                         closeApproachRepository.save(closeApproach);
-
-                        riskAssessmentService.assessmentImpactRisk(asteroid, km);
                         count++;
                     }
                 }
@@ -90,12 +87,23 @@ public class NasaSyncService {
         return count;
     }
 
+    private RiskLevel calculateRiskLevel(Asteroid asteroid, Double distanceKm) {
+        if (Boolean.TRUE.equals(asteroid.getIsPotentiallyDangerous())) {
+            if (distanceKm <= 500_000.0)   return RiskLevel.CRITICAL;
+            if (distanceKm <= 2_000_000.0) return RiskLevel.HIGH;
+            if (distanceKm <= 7_500_000.0) return RiskLevel.MEDIUM;
+            return RiskLevel.LOW;
+        }
+        if (distanceKm <= 500_000.0)   return RiskLevel.MEDIUM;
+        return RiskLevel.LOW;
+    }
+
     public int syncAsteroidsFromToday() {
         try {
             LocalDate today = LocalDate.now();
             return syncAsteroids(today, today);
         } catch (Exception e) {
-            e.printStackTrace(); // veja nos logs do Spring Boot
+            e.printStackTrace();
             throw e;
         }
     }

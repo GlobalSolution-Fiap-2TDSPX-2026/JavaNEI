@@ -1,6 +1,5 @@
 package br.com.fiap.global_solution.models;
 
-import br.com.fiap.global_solution.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,9 +18,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+    private String email;
     private String username;
     private String password;
-    private Role role;
 
 
 }

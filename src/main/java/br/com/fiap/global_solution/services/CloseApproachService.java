@@ -16,7 +16,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CloseApproachService {
@@ -73,9 +75,9 @@ public class CloseApproachService {
 
 
     public CloseApproachesSummaryResponse getSummary() {
-        var all = closeApproachRepository.findByApproachDateBetween(LocalDate.now(), LocalDate.now());
+        var all =  closeApproachRepository.findByApproachDate(LocalDate.now());
 
-        int count = all.size();
+        if (all.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CloseApproach not found");
 
         Double minDistance = all.stream()
                 .map(CloseApproach::getMissDistanceKm)
@@ -90,18 +92,24 @@ public class CloseApproachService {
                 .map(Asteroid::getName)
                 .orElse(null);
 
-        RiskLevel highestRisk = all.stream()
-                .filter(c -> c.getAsteroid() != null && c.getAsteroid().getRiskAssessment() != null)
-                .map(c -> c.getAsteroid().getRiskAssessment().getRiskLevel())
-                .filter(java.util.Objects::nonNull)
-                .max(java.util.Comparator.comparing(RiskLevel::ordinal))
-                .orElse(null);
+        RiskLevel overallRisk = calculateOverallRisk(all);
 
         List<CloseApproachResponse> listaDtos = all.stream()
                 .map(CloseApproachResponse::fromEntity)
                 .toList();
 
-        return new CloseApproachesSummaryResponse(count, minDistance, minDistanceAsteroid, highestRisk, listaDtos);
+        return new CloseApproachesSummaryResponse(all.size(), minDistance, minDistanceAsteroid, overallRisk, listaDtos);
     }
+
+    private RiskLevel calculateOverallRisk(List<CloseApproach> approaches) {
+        return approaches.stream()
+                .collect(Collectors.groupingBy(ca -> ca.getRiskLevel(), Collectors.counting()))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(RiskLevel.LOW);
+    }
+
+
 
 }

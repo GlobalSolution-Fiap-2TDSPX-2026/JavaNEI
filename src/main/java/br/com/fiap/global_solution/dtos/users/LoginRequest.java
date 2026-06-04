@@ -1,11 +1,13 @@
 package br.com.fiap.global_solution.dtos.users;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record LoginRequest (
 
-        @NotBlank(message = "username is required")
-        String username,
+        @NotBlank(message = "email is required")
+        @Email
+        String email,
 
 
         @NotBlank(message = "password is required")

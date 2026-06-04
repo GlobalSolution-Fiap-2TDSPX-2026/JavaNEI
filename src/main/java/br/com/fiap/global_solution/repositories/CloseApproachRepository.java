@@ -18,5 +18,9 @@ public interface CloseApproachRepository extends JpaRepository<CloseApproach, Lo
 
     Page<CloseApproach> findByMissDistanceKmLessThan(Double distance, Pageable pageable);
 
+    List<CloseApproach> findByApproachDate(LocalDate date);
+
+
+
 
 }

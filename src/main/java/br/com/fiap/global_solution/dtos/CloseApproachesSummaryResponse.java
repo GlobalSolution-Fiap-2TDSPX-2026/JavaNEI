@@ -7,6 +7,6 @@ public record CloseApproachesSummaryResponse(
         int countAsteroids,
         Double minDistanceKm,
         String minDistanceAsteroid,
-        RiskLevel highestRisk,
+        RiskLevel overallRisk,
         List<CloseApproachResponse> approaches
 ) {}

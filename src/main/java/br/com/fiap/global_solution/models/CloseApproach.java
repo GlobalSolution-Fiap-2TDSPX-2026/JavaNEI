@@ -1,6 +1,7 @@
 package br.com.fiap.global_solution.models;
 
 
+import br.com.fiap.global_solution.enums.RiskLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,5 +29,6 @@ public class CloseApproach {
     private Double missDistanceKm;
     private Double relativeVelocityKmH;
     private String orbitingBody;
+    private RiskLevel riskLevel;
 
 }

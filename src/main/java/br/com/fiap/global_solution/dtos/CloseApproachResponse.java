@@ -1,5 +1,6 @@
 package br.com.fiap.global_solution.dtos;
 
+import br.com.fiap.global_solution.enums.RiskLevel;
 import br.com.fiap.global_solution.models.CloseApproach;
 import java.time.LocalDate;
 
@@ -9,7 +10,8 @@ public record CloseApproachResponse(
         LocalDate approachDate,
         Double missDistanceKm,
         Double relativeVelocityKmH,
-        String orbitingBody
+        String orbitingBody,
+        RiskLevel riskLevel
 ) {
     public static CloseApproachResponse fromEntity(CloseApproach c){
         return new CloseApproachResponse(
@@ -18,7 +20,8 @@ public record CloseApproachResponse(
                 c.getApproachDate(),
                 c.getMissDistanceKm(),
                 c.getRelativeVelocityKmH(),
-                c.getOrbitingBody()
+                c.getOrbitingBody(),
+                c.getRiskLevel()
 
         );
     }
