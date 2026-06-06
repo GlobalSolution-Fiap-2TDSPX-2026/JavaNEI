@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,9 +19,10 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Cacheable(value = "users")
@@ -33,6 +35,7 @@ public class UserService {
 
     @CacheEvict(value = "users", allEntries = true)
     public User addUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
