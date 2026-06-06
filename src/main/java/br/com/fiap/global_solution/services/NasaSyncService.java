@@ -2,6 +2,7 @@ package br.com.fiap.global_solution.services;
 
 import br.com.fiap.global_solution.dtos.nasa.NasaAsteroid;
 import br.com.fiap.global_solution.dtos.nasa.NasaCloseApproachData;
+import br.com.fiap.global_solution.dtos.nasa.NasaEstimatedDiameter;
 import br.com.fiap.global_solution.dtos.nasa.NasaResponse;
 import br.com.fiap.global_solution.enums.RiskLevel;
 import br.com.fiap.global_solution.models.Asteroid;
@@ -52,6 +53,14 @@ public class NasaSyncService {
                             a.setNasaId(nasaDto.id());
                             a.setName(nasaDto.name());
                             a.setIsPotentiallyDangerous(nasaDto.isPotentiallyHazardousAsteroid());
+                            if (nasaDto.estimatedDiameter() != null) {
+                                NasaEstimatedDiameter kmDiameter = nasaDto.estimatedDiameter().get("kilometers");
+                                if (kmDiameter != null) {
+                                    a.setEstimatedDiameterMinKm(kmDiameter.estimatedDiameterMin());
+                                    a.setEstimatedDiameterMaxKm(kmDiameter.estimatedDiameterMax());
+                                }
+                            }
+
                             return asteroidRepository.save(a);
                         });
 

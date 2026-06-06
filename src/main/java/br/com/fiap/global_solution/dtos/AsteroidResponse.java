@@ -6,15 +6,25 @@ public record AsteroidResponse(
         Long id,
         String nasaId,
         String name,
-        Boolean isPotentiallyDangerous
+        Boolean isPotentiallyDangerous,
+        Double estimatedDiameterMinKm,
+        Double estimatedDiameterMaxKm,
+        Double estimatedDiameterAvgKm
 ) {
     public static AsteroidResponse fromEntity(Asteroid a) {
+        Double min = a.getEstimatedDiameterMinKm();
+        Double max = a.getEstimatedDiameterMaxKm();
+
+        Double avg = (min != null && max != null) ? (min + max) / 2.0 : null;
+
         return new AsteroidResponse(
                 a.getId(),
                 a.getNasaId(),
                 a.getName(),
-                a.getIsPotentiallyDangerous()
+                a.getIsPotentiallyDangerous(),
+                min,
+                max,
+                avg
         );
-
     }
 }
