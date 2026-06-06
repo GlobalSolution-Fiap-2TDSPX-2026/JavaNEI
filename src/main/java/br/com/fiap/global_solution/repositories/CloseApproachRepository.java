@@ -9,6 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface CloseApproachRepository extends JpaRepository<CloseApproach, Long> {
 
@@ -20,6 +21,7 @@ public interface CloseApproachRepository extends JpaRepository<CloseApproach, Lo
 
     List<CloseApproach> findByApproachDate(LocalDate date);
 
+    Optional<CloseApproach> findByAsteroidAndApproachDate(Asteroid asteroid, LocalDate approachDate);
 
 
 

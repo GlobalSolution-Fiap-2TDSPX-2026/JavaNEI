@@ -68,18 +68,27 @@ public class NasaSyncService {
                             velocidadeKmH = Double.parseDouble(ca.relativeVelocity().get("kilometers_per_hour"));
                         }
 
-                        RiskLevel riskLevel = calculateRiskLevel(asteroid, km);
 
-                        CloseApproach closeApproach = CloseApproach.builder()
-                                .asteroid(asteroid)
-                                .approachDate(LocalDate.parse(ca.closeApproachDate()))
-                                .missDistanceKm(km)
-                                .relativeVelocityKmH(velocidadeKmH)
-                                .orbitingBody("Earth")
-                                .riskLevel(riskLevel)
-                                .build();
-                        closeApproachRepository.save(closeApproach);
-                        count++;
+                        LocalDate approachDate = LocalDate.parse(ca.closeApproachDate());
+
+                        boolean alreadyExist = closeApproachRepository
+                                .findByAsteroidAndApproachDate(asteroid, approachDate)
+                                .isPresent();
+
+                        if (!alreadyExist) {
+                            RiskLevel riskLevel = calculateRiskLevel(asteroid, km);
+
+                            CloseApproach closeApproach = CloseApproach.builder()
+                                    .asteroid(asteroid)
+                                    .approachDate(approachDate)
+                                    .missDistanceKm(km)
+                                    .relativeVelocityKmH(velocidadeKmH)
+                                    .orbitingBody("Earth")
+                                    .riskLevel(riskLevel)
+                                    .build();
+                            closeApproachRepository.save(closeApproach);
+                            count++;
+                        }
                     }
                 }
             }
