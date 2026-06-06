@@ -4,6 +4,7 @@ import br.com.fiap.global_solution.dtos.CloseApproachRequest;
 import br.com.fiap.global_solution.dtos.CloseApproachResponse;
 import br.com.fiap.global_solution.dtos.CloseApproachesSummaryResponse;
 import br.com.fiap.global_solution.models.Asteroid;
+import br.com.fiap.global_solution.models.CloseApproach;
 import br.com.fiap.global_solution.services.AsteroidService;
 import br.com.fiap.global_solution.services.CloseApproachService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,9 +35,18 @@ public class CloseApproachController {
         this.asteroidService = asteroidService;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<Page<CloseApproach>> getAllCloseApproaches(
+            @PageableDefault Pageable pageable) {
+
+        return ResponseEntity.ok(
+                closeApproachService.getCloseApproachs(pageable)
+        );
+    }
+
     @GetMapping
-    @Operation(summary = "Listar todas as aproximações paginadas")
-    public ResponseEntity<CloseApproachesSummaryResponse> getAll() {
+    @Operation(summary = "Listar todas as aproximações do dia")
+    public ResponseEntity<CloseApproachesSummaryResponse> getAllToday() {
         CloseApproachesSummaryResponse response = closeApproachService.getSummary();
         return ResponseEntity.ok(response);
     }
