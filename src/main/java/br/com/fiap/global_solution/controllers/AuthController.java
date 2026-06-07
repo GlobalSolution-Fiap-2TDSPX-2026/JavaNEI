@@ -3,6 +3,7 @@ package br.com.fiap.global_solution.controllers;
 import br.com.fiap.global_solution.dtos.users.LoginRequest;
 import br.com.fiap.global_solution.dtos.users.LoginResponse;
 import br.com.fiap.global_solution.infrastructure.security.JwtService;
+import br.com.fiap.global_solution.models.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -40,9 +41,15 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.email());
-        String token = jwtService.generateToken(userDetails);
+        User user = (User) userDetailsService.loadUserByUsername(request.email());
+        String token = jwtService.generateToken(user);
 
-        return ResponseEntity.ok(new LoginResponse(userDetails.getUsername(), token));
+        return ResponseEntity.ok(new LoginResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getUsername(),
+                token
+        ));
     }
 }
