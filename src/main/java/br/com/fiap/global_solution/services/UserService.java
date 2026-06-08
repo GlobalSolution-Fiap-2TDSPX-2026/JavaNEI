@@ -41,9 +41,23 @@ public class UserService {
 
     @CacheEvict(value = "users", allEntries = true)
     public User updateUser(Long id, User newUser) {
+
         var optionalUser = findById(id);
-        if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+
+        if (optionalUser.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found"
+            );
+        }
+
         newUser.setId(id);
+
+        // criptografa a senha
+        newUser.setPassword(
+                passwordEncoder.encode(newUser.getPassword())
+        );
+
         return userRepository.save(newUser);
     }
 
