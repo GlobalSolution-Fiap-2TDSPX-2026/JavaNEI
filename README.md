@@ -136,10 +136,3 @@ POST /auth/login
 Authorization: Bearer <token>
 ```
 
----
-
-## 📱 Endereço para Testes Mobile (Android)
-
-- **Emulador:** `http://10.0.2.2:8080`
-- **Dispositivo físico:** `http://<IP-da-máquina>:8080`
-- **Produção:** URL do Railway
