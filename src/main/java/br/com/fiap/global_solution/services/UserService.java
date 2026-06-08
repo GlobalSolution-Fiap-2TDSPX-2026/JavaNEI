@@ -35,6 +35,11 @@ public class UserService {
 
     @CacheEvict(value = "users", allEntries = true)
     public User addUser(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent())
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
+
+        if (userRepository.findByUsername(user.getUsername()).isPresent())
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already in use");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
