@@ -20,7 +20,7 @@
 | | |
 |---|---|
 | 🚀 Deploy | https://javanei.onrender.com |
-| 🎥 Vídeo de Apresentação | `[preencher link do vídeo]` |
+| 🎥 Vídeo de Apresentação | https://youtu.be/hxDZhr_z55s |
 | 📖 Repositório GitHub | https://github.com/GlobalSolution-Fiap-2TDSPX-2026/JavaNEI |
 | 📋 Documentação Swagger | https://javanei.onrender.com/swagger-ui/index.html |
 
