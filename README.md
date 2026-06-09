@@ -19,10 +19,10 @@
 
 | | |
 |---|---|
-| 🚀 Deploy | `[preencher URL do Railway]` |
+| 🚀 Deploy | https://javanei.onrender.com |
 | 🎥 Vídeo de Apresentação | `[preencher link do vídeo]` |
 | 📖 Repositório GitHub | https://github.com/GlobalSolution-Fiap-2TDSPX-2026/JavaNEI |
-| 📋 Documentação Swagger | `[URL do deploy]/swagger-ui/index.html` |
+| 📋 Documentação Swagger | https://javanei.onrender.com/swagger-ui/index.html |
 
 ---
 
