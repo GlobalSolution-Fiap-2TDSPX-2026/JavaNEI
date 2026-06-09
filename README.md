@@ -49,6 +49,7 @@
 - Java 17+
 - Maven 3.8+
 - Acesso ao banco Oracle FIAP
+- Chave da API NEO Ws da NASA
 
 ### Passos
 
@@ -56,6 +57,8 @@
 # Clone o repositório
 git clone https://github.com/GlobalSolution-Fiap-2TDSPX-2026/JavaNEI.git
 cd JavaNEI
+
+declare a sua chave de api no application.properties
 
 # Execute a aplicação
 ./mvnw spring-boot:run
