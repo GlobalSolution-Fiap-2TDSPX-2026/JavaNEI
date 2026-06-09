@@ -18,7 +18,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-    // --- ResponseStatusException (404, 409, etc lançados manualmente nos services/controllers) ---
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ErrorResponse> handleResponseStatus(
             ResponseStatusException ex, HttpServletRequest request) {
@@ -29,14 +28,13 @@ public class RestExceptionHandler {
                 .error(HttpStatus.resolve(ex.getStatusCode().value()) != null
                         ? HttpStatus.resolve(ex.getStatusCode().value()).getReasonPhrase()
                         : "Error")
-                .message(ex.getMessage())
+                .message(ex.getReason())
                 .path(request.getRequestURI())
                 .build();
 
         return ResponseEntity.status(ex.getStatusCode()).body(body);
     }
 
-    // --- Erros de validação (@Valid / @Validated) ---
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponse> handleValidation(
             MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -58,16 +56,17 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(body);
     }
 
-    // --- Qualquer exceção não tratada (fallback 500) ---
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(
             Exception ex, HttpServletRequest request) {
+
+        ex.printStackTrace(); // log temporário para debug
 
         var body = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("Internal Server Error")
-                .message("An unexpected error occurred. Please try again later.")
+                .message(ex.getClass().getName() + ": " + ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
 
