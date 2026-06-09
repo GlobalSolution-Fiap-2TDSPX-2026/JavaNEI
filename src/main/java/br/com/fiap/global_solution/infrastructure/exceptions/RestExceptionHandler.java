@@ -29,7 +29,7 @@ public class RestExceptionHandler {
                 .error(HttpStatus.resolve(ex.getStatusCode().value()) != null
                         ? HttpStatus.resolve(ex.getStatusCode().value()).getReasonPhrase()
                         : "Error")
-                .message(ex.getReason())
+                .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
 
