@@ -1,0 +1,12 @@
+FROM mysql:8.0
+
+ENV MYSQL_DATABASE=nei_db
+ENV MYSQL_USER=nei_user
+ENV MYSQL_PASSWORD=nei_pass
+ENV MYSQL_ROOT_PASSWORD=senha123
+
+# A imagem oficial do MySQL roda automaticamente qualquer .sql
+# colocado em /docker-entrypoint-initdb.d/ na primeira inicialização
+COPY ddl_mysql.sql /docker-entrypoint-initdb.d/01_ddl.sql
+
+EXPOSE 3306
