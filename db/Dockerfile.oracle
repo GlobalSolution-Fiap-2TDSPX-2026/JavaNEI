@@ -1,0 +1,8 @@
+# Imagem oficial leve do Oracle (gratuita, feita para dev/teste/CI)
+FROM gvenzl/oracle-free:23-slim
+
+# Esse script roda automaticamente na primeira inicialização do banco,
+# criando as tabelas do projeto NEI
+COPY ddl.sql /container-entrypoint-initdb.d/01_ddl.sql
+
+EXPOSE 1521
