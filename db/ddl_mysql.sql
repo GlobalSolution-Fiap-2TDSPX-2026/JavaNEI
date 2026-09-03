@@ -1,31 +1,36 @@
--- DDL das tabelas do projeto NEI (Near Earth Impact) - versão MySQL
--- Baseado nas entidades JPA: Asteroid, CloseApproach, User
-
 CREATE TABLE tb_asteroid (
-    ID BIGINT AUTO_INCREMENT PRIMARY KEY,
-    NASA_ID VARCHAR(255),
-    NAME VARCHAR(255),
-    ESTIMATED_DIAMETER_MIN_KM DOUBLE,
-    ESTIMATED_DIAMETER_MAX_KM DOUBLE,
-    ABSOLUTE_MAGNITUDE DOUBLE,
-    IS_POTENTIALLY_DANGEROUS BOOLEAN
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nasa_id VARCHAR(255),
+    name VARCHAR(255),
+    estimated_diameter_min_km DOUBLE,
+    estimated_diameter_max_km DOUBLE,
+    absolute_magnitude DOUBLE,
+    is_potentially_dangerous BOOLEAN
 );
 
-CREATE TABLE tb_close_aproach (
-    ID BIGINT AUTO_INCREMENT PRIMARY KEY,
-    ASTEROID_ID BIGINT,
-    APPROACH_DATE DATE,
-    MISS_DISTANCE_KM DOUBLE,
-    RELATIVE_VELOCITY_KM_H DOUBLE,
-    ORBITING_BODY VARCHAR(255),
-    RISK_LEVEL INT,
-    CONSTRAINT FK_CLOSE_APPROACH_ASTEROID FOREIGN KEY (ASTEROID_ID) REFERENCES TB_ASTEROID(ID)
+CREATE TABLE tb_close_approach (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    asteroid_id BIGINT,
+    approach_date DATE,
+    miss_distance_km DOUBLE,
+    relative_velocity_km_h DOUBLE,
+    orbiting_body VARCHAR(255),
+    risk_level INT,
+    CONSTRAINT fk_close_approach_asteroid FOREIGN KEY (asteroid_id) REFERENCES tb_asteroid(id)
+);
+
+-- Tabela de junção exigida pelo Spring JPA no PUT/DELETE
+CREATE TABLE tb_asteroid_close_approaches (
+    asteroid_id BIGINT NOT NULL,
+    close_approaches_id BIGINT NOT NULL,
+    CONSTRAINT fk_taca_asteroid FOREIGN KEY (asteroid_id) REFERENCES tb_asteroid(id),
+    CONSTRAINT fk_taca_close_approach FOREIGN KEY (close_approaches_id) REFERENCES tb_close_approach(id)
 );
 
 CREATE TABLE tb_user (
-    ID BIGINT AUTO_INCREMENT PRIMARY KEY,
-    NAME VARCHAR(255),
-    EMAIL VARCHAR(255),
-    USERNAME VARCHAR(255),
-    PASSWORD VARCHAR(255)
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    username VARCHAR(255),
+    password VARCHAR(255)
 );
