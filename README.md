@@ -31,6 +31,7 @@ cd ..
 docker build -t nei-app .
 docker tag nei-app rm564232nei.azurecr.io/rm564232-nei-app:v4
 docker push rm564232nei.azurecr.io/rm564232-nei-app:v4
+```
 
 ## 🔗 Links
 
