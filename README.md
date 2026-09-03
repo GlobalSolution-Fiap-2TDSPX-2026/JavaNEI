@@ -15,6 +15,23 @@
 
 ---
 
+# Java NEI - Containerization & Cloud Deployment
+
+## Build e Push das Imagens no Azure Container Registry (ACR)
+
+```bash
+# Build e Push do MySQL
+cd db
+docker build -f Dockerfile.mysql -t nei-mysql .
+docker tag nei-mysql rm564232nei.azurecr.io/rm564232-nei-mysql:v2
+docker push rm564232nei.azurecr.io/rm564232-nei-mysql:v2
+
+# Build e Push da Aplicação Spring Boot
+cd ..
+docker build -t nei-app .
+docker tag nei-app rm564232nei.azurecr.io/rm564232-nei-app:v4
+docker push rm564232nei.azurecr.io/rm564232-nei-app:v4
+
 ## 🔗 Links
 
 | | |
